@@ -1,0 +1,125 @@
+plugins {
+    id 'fabric-loom' version '1.3.8'
+    id 'maven-publish'
+    id "org.jetbrains.kotlin.jvm" version "1.9.0"
+    id "io.github.juuxel.loom-vineflower" version "1.+" // Vineflower, a better decompiler
+    id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+version = project.mod_version
+group = project.maven_group
+
+// Formats the mod version to include the Minecraft version and build number (if present)
+// example: 1.0.0+1.18.2-100
+String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+version = "${mod_version}+${minecraft_version}" + (buildNumber != null ? "-${buildNumber}" : "")
+
+repositories {
+    mavenCentral()
+    maven { url = "https://maven.shedaniel.me/" } // REI
+    maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
+    maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+    maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
+    maven { url = "https://mvn.devos.one/snapshots/" }
+    maven { url = "https://jitpack.io/" } // for Porting Lib: Mixin Extras, Fabric ASM
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings(loom.layered {
+        it.mappings("org.quiltmc:quilt-mappings:${minecraft_version}+build.${qm_version}:intermediary-v2")
+        it.parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")
+        it.officialMojangMappings { nameSyntheticMembers = false }
+    })
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+    // Uncomment the following line to enable the deprecated Fabric API modules.
+    // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+
+    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+
+    // Development QOL
+    modLocalRuntime("maven.modrinth:lazydfu:${lazydfu_version}")
+    modLocalRuntime("com.terraformersmc:modmenu:${modmenu_version}")
+
+    // Recipe Viewers - Create Fabric supports JEI, REI, and EMI.
+    // See root gradle.properties to choose which to use at runtime.
+    switch (recipe_viewer.toLowerCase(Locale.ROOT)) {
+        case "jei": modLocalRuntime("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"); break
+        case "rei": modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}"); break
+        case "emi": modLocalRuntime("dev.emi:emi:${emi_version}"); break
+        case "disabled": break
+        default: println("Unknown recipe viewer specified: ${recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
+    }
+    // if you would like to add integration with them, uncomment them here.
+//    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_fabric_version}")
+//    modCompileOnly("mezz.jei:jei-${minecraft_version}-common:${jei_fabric_version}")
+//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}")
+//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
+//    modCompileOnly("dev.emi:emi:${emi_version}")
+}
+
+processResources {
+    // require dependencies to be the version compiled against or newer
+    Map<String, String> properties = new HashMap<>()
+    properties.put("version", version)
+    properties.put("fabric_loader_version", loader_version)
+    properties.put("fabric_api_version", fabric_version)
+    properties.put("minecraft_version", minecraft_version)
+
+    properties.forEach((k, v) -> inputs.property(k, v))
+
+    filesMatching("fabric.mod.json") {
+        expand properties
+    }
+}
+
+machete {
+    // disable machete locally for faster builds
+    enabled = buildNumber != null
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = 17
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = Integer.parseInt(sourceCompatibility)
+}
+
+java {
+    withSourcesJar()
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
+}
