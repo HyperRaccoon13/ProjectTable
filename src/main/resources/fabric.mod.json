@@ -19,7 +19,13 @@
 				"value": "com.github.erdragh.projecttable.ProjectTable",
 				"adapter": "kotlin"
 			}
-		]
+		],
+    "client": [
+      {
+        "value": "com.github.erdragh.projecttable.client.ProjectTableClient",
+        "adapter": "kotlin"
+      }
+    ]
 	},
 	"mixins": [
 		"projecttable.mixins.json"
