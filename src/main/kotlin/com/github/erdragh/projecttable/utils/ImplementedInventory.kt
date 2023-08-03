@@ -10,7 +10,7 @@ interface ImplementedInventory : Container {
     fun getItems(): NonNullList<ItemStack>
 
     fun size(): Int {
-        return getItems().size;
+        return getItems().size
     }
 
     override fun isEmpty(): Boolean {
@@ -24,7 +24,7 @@ interface ImplementedInventory : Container {
     }
 
     override fun removeItem(slot: Int, amount: Int): ItemStack {
-        val result = ContainerHelper.removeItem(getItems(), slot, amount);
+        val result = ContainerHelper.removeItem(getItems(), slot, amount)
         if (!result.isEmpty) {
             setChanged()
         }
@@ -36,9 +36,9 @@ interface ImplementedInventory : Container {
     }
 
     override fun setItem(slot: Int, stack: ItemStack) {
-        getItems()[slot] = stack;
+        getItems()[slot] = stack
         if (stack.count > stack.maxStackSize) {
-            stack.count = stack.maxStackSize;
+            stack.count = stack.maxStackSize
         }
     }
 

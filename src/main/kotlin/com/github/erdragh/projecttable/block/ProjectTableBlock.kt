@@ -51,7 +51,7 @@ class ProjectTableBlock : BaseEntityBlock(
         hit: BlockHitResult
     ): InteractionResult {
         if (!level.isClientSide()) {
-            val menuProvider: MenuProvider? = state.getMenuProvider(level, pos);
+            val menuProvider: MenuProvider? = state.getMenuProvider(level, pos)
 
             if (menuProvider != null) {
                 player.openMenu(menuProvider)
@@ -67,9 +67,9 @@ class ProjectTableBlock : BaseEntityBlock(
     @Deprecated("Deprecated in Java")
     override fun onRemove(state: BlockState, level: Level, pos: BlockPos, newState: BlockState, isMoving: Boolean) {
         if (state.block != newState.block) {
-            val entity: BlockEntity? = level.getBlockEntity(pos);
+            val entity: BlockEntity? = level.getBlockEntity(pos)
             if (entity is ProjectTableBlockEntity) {
-                Containers.dropContents(level, pos, entity);
+                Containers.dropContents(level, pos, entity)
                 level.updateNeighbourForOutputSignal(pos, this)
             }
         }

@@ -22,8 +22,8 @@ class ProjectTableScreenHandler : AbstractContainerMenu {
         inventory: Inventory,
         container: Container
     ) : super(ProjectTable.PROJECT_TABLE_SCREEN_HANDLER_TYPE, syncId) {
-        checkContainerSize(container, 9);
-        this.container = container;
+        checkContainerSize(container, 9)
+        this.container = container
 
         container.startOpen(inventory.player)
 
@@ -54,14 +54,14 @@ class ProjectTableScreenHandler : AbstractContainerMenu {
         val slot: Slot? = if (index >= this.slots.size) null else this.slots[index]
 
         if (slot != null && slot.hasItem()) {
-            val originalStack = slot.item;
+            val originalStack = slot.item
 
             if (index < this.container.containerSize) {
                 if (!this.moveItemStackTo(originalStack, this.container.containerSize, this.slots.size, true)) {
                     return ItemStack.EMPTY
                 }
             } else if (!this.moveItemStackTo(originalStack, 0, this.container.containerSize, false)) {
-                return ItemStack.EMPTY;
+                return ItemStack.EMPTY
             }
 
             if (originalStack.isEmpty) {
@@ -71,6 +71,6 @@ class ProjectTableScreenHandler : AbstractContainerMenu {
             }
         }
 
-        return newStack;
+        return newStack
     }
 }

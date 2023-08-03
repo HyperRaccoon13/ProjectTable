@@ -18,7 +18,7 @@ object ProjectTable : ModInitializer {
     val PROJECT_TABLE_SCREEN_HANDLER_TYPE: ExtendedScreenHandlerType<ProjectTableScreenHandler> = ExtendedScreenHandlerType(::ProjectTableScreenHandler)
 
     init {
-        Registry.register(Registry.MENU, id("projecttable"), PROJECT_TABLE_SCREEN_HANDLER_TYPE);
+        Registry.register(Registry.MENU, id("projecttable"), PROJECT_TABLE_SCREEN_HANDLER_TYPE)
     }
 
     override fun onInitialize() {
@@ -27,10 +27,10 @@ object ProjectTable : ModInitializer {
 		// Proceed with mild caution.
         ModItems.initialize()
         ModBlocks.initialize()
-        logger.info("Project Table initialized");
+        logger.info("Project Table initialized")
 	}
 
 	fun id(path: String): ResourceLocation {
-        return ResourceLocation(this.MOD_ID, path);
+        return ResourceLocation(this.MOD_ID, path)
 	}
 }

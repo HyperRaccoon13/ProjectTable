@@ -9,9 +9,5 @@ object ModItems {
 }
 
 fun <T : Item> register(item: T, id: String): T {
-    val itemId = ProjectTable.id(id);
-
-    val registeredItem: T = Registry.register(Registry.ITEM, itemId, item);
-
-    return registeredItem;
+    return Registry.register(Registry.ITEM, ProjectTable.id(id), item)
 }

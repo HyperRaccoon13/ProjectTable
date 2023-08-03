@@ -7,10 +7,11 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntit
 import net.minecraft.core.Registry
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.BlockEntityType
 
 object ModBlocks {
-    val PROJECT_TABLE = register(ProjectTableBlock(), "projecttable", true);
-    val PROJECT_TABLE_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, ProjectTable.id("projecttable_entity"),
+    private val PROJECT_TABLE = register(ProjectTableBlock(), "projecttable", true)
+    val PROJECT_TABLE_ENTITY_TYPE: BlockEntityType<ProjectTableBlockEntity> = Registry.register(Registry.BLOCK_ENTITY_TYPE, ProjectTable.id("projecttable_entity"),
         FabricBlockEntityTypeBuilder.create(::ProjectTableBlockEntity, PROJECT_TABLE).build())
 
     fun initialize() {
@@ -18,12 +19,12 @@ object ModBlocks {
 }
 
 fun <T : Block> register(block: T, name: String, shouldRegisterItem: Boolean): T {
-    val resourceLocation = ProjectTable.id(name);
+    val resourceLocation = ProjectTable.id(name)
 
     if (shouldRegisterItem) {
-        val blockItem = BlockItem(block, FabricItemSettings());
+        val blockItem = BlockItem(block, FabricItemSettings())
         Registry.register(Registry.ITEM, resourceLocation, blockItem)
     }
 
-    return Registry.register(Registry.BLOCK, resourceLocation, block);
+    return Registry.register(Registry.BLOCK, resourceLocation, block)
 }

@@ -23,9 +23,9 @@ class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Mo
 
     private val inventorySize = 2 * 9
     // 9 extra slots for the crafting interface
-    private val items = NonNullList.withSize(inventorySize + 9, ItemStack.EMPTY);
+    private val items = NonNullList.withSize(inventorySize + 9, ItemStack.EMPTY)
     override fun getItems(): NonNullList<ItemStack> {
-        return items;
+        return items
     }
 
     override fun getContainerSize(): Int {
@@ -42,8 +42,8 @@ class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Mo
         return super.saveAdditional(tag)
     }
 
-    override fun createMenu(i: Int, inventory: Inventory, player: Player): AbstractContainerMenu? {
-        return ProjectTableScreenHandler(i, inventory, this);
+    override fun createMenu(i: Int, inventory: Inventory, player: Player): AbstractContainerMenu {
+        return ProjectTableScreenHandler(i, inventory, this)
     }
 
     override fun getDisplayName(): Component {
