@@ -1,6 +1,7 @@
 package com.github.erdragh.projecttable
 
 import net.fabricmc.api.ModInitializer
+import net.minecraft.resources.ResourceLocation
 import org.slf4j.LoggerFactory
 
 object ProjectTable : ModInitializer {
@@ -15,7 +16,7 @@ object ProjectTable : ModInitializer {
 		logger.info("Hello Fabric world!")
 	}
 
-	fun id(id: String) {
-
+	fun id(path: String): ResourceLocation {
+        return ResourceLocation(this.MOD_ID, path);
 	}
 }
