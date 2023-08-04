@@ -3,6 +3,8 @@
 	"package": "com.github.erdragh.projecttable.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
+    "RecipeBookComponentAccessor",
+    "TestMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
