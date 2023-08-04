@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
 
 object ModBlocks {
-    private val PROJECT_TABLE = register(ProjectTableBlock(), "projecttable", true)
+    val PROJECT_TABLE = register(ProjectTableBlock(), "projecttable", true)
     val PROJECT_TABLE_ENTITY_TYPE: BlockEntityType<ProjectTableBlockEntity> = Registry.register(Registry.BLOCK_ENTITY_TYPE, ProjectTable.id("projecttable_entity"),
         FabricBlockEntityTypeBuilder.create(::ProjectTableBlockEntity, PROJECT_TABLE).build())
 
