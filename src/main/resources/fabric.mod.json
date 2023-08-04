@@ -1,40 +1,52 @@
 {
-	"schemaVersion": 1,
-	"id": "projecttable",
-	"version": "${version}",
-	"name": "ProjectTable",
-	"description": "Adds the project table you've been so nostalgic about.",
-	"authors": [
-		"Erdragh"
-	],
-	"contact": {
-		"sources": "https://github.com/Erdragh/ProjectTable"
-	},
-	"license": "MIT",
-	"icon": "assets/projecttable/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			{
-				"value": "com.github.erdragh.projecttable.ProjectTable",
-				"adapter": "kotlin"
-			}
-		],
+  "schemaVersion": 1,
+  "id": "projecttable",
+  "version": "${version}",
+  "name": "ProjectTable",
+  "description": "Adds the project table you've been so nostalgic about.",
+  "authors": [
+    "Erdragh"
+  ],
+  "contact": {
+    "sources": "https://github.com/Erdragh/ProjectTable"
+  },
+  "license": "MIT",
+  "icon": "assets/projecttable/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.github.erdragh.projecttable.ProjectTable",
+        "adapter": "kotlin"
+      }
+    ],
     "client": [
       {
         "value": "com.github.erdragh.projecttable.client.ProjectTableClient",
         "adapter": "kotlin"
       }
+    ],
+    "rei_common": [
+      {
+        "value": "com.github.erdragh.projecttable.compat.ProjectTableREIPluginServer",
+        "adapter": "kotlin"
+      }
+    ],
+    "rei_client": [
+      {
+        "value": "com.github.erdragh.projecttable.compat.ProjectTableREIPlugin",
+        "adapter": "kotlin"
+      }
     ]
-	},
-	"mixins": [
-		"projecttable.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=${fabric_loader_version}",
-		"minecraft": "~${minecraft_version}",
-		"java": ">=17",
-		"fabric-api": "*",
-		"fabric-language-kotlin": ">=1.9.0"
-	}
+  },
+  "mixins": [
+    "projecttable.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=17",
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=1.9.0"
+  }
 }
