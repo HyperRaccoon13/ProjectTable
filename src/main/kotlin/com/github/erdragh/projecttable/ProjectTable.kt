@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.inventory.MenuType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -15,7 +16,7 @@ object ProjectTable : ModInitializer {
 	const val MOD_NAME = "Project Table"
     val logger: Logger = LoggerFactory.getLogger(MOD_NAME)
 
-    val PROJECT_TABLE_SCREEN_HANDLER_TYPE: ExtendedScreenHandlerType<ProjectTableScreenHandler> = ExtendedScreenHandlerType(::ProjectTableScreenHandler)
+    val PROJECT_TABLE_SCREEN_HANDLER_TYPE: MenuType<ProjectTableScreenHandler> = MenuType(::ProjectTableScreenHandler)
 
     init {
         Registry.register(Registry.MENU, id("projecttable"), PROJECT_TABLE_SCREEN_HANDLER_TYPE)

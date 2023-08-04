@@ -39,7 +39,7 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
 
         this.recipeBook.init(width, height, minecraft, narrow, menu)
         this.leftPos = recipeBook.updateScreenPosition(width, imageWidth)
-        addRenderableWidget(recipeBook)
+        addRenderableOnly(recipeBook)
 
         setInitialFocus(recipeBook)
 
@@ -116,7 +116,7 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
         return super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton) && bl
     }
 
-    override fun slotClicked(slot: Slot, slotId: Int, mouseButton: Int, type: ClickType) {
+    override fun slotClicked(slot: Slot?, slotId: Int, mouseButton: Int, type: ClickType) {
         super.slotClicked(slot, slotId, mouseButton, type)
         recipeBook.slotClicked(slot)
     }

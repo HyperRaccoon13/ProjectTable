@@ -30,7 +30,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
     constructor(syncId: Int, inventory: Inventory) : this(
         syncId,
         inventory,
-        SimpleContainer(9),
+        SimpleContainer(27),
         ContainerLevelAccess.NULL
     )
 
@@ -51,23 +51,23 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
             }
 
             override fun isEmpty(): Boolean {
-                for (i in 0..<size) {
+                for (i in 0..<containerSize) {
                     if (!getItem(i).isEmpty) return false
                 }
                 return true
             }
 
             override fun getItem(slot: Int): ItemStack {
-                return if (slot >= size) ItemStack.EMPTY else container.getItem(slot)
+                return if (slot >= containerSize) ItemStack.EMPTY else container.getItem(slot)
             }
 
             override fun removeItemNoUpdate(slot: Int): ItemStack {
-                if (slot >= size) throw IndexOutOfBoundsException()
+                if (slot >= containerSize) throw IndexOutOfBoundsException()
                 return container.removeItemNoUpdate(slot)
             }
 
             override fun removeItem(slot: Int, amount: Int): ItemStack {
-                if (slot >= size) throw IndexOutOfBoundsException()
+                if (slot >= containerSize) throw IndexOutOfBoundsException()
                 val stack = container.removeItem(slot, amount)
                 if (!stack.isEmpty) {
                     slotsChanged(this)
@@ -76,7 +76,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
             }
 
             override fun setItem(slot: Int, stack: ItemStack) {
-                if (slot >= size) throw IndexOutOfBoundsException()
+                if (slot >= containerSize) throw IndexOutOfBoundsException()
                 container.setItem(slot, stack)
                 slotsChanged(this)
             }
@@ -90,7 +90,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
             }
 
             override fun clearContent() {
-                for (i in 0..<size) {
+                for (i in 0..<containerSize) {
                     removeItemNoUpdate(i)
                 }
             }
@@ -106,7 +106,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
         }
 
         // extra project table storage
-        for (y in 0..1) for (x in 0..2) {
+        for (y in 0..1) for (x in 0..8) {
             addSlot(Slot(container, x + y * 9 + 9, 8 + x * 18, 84 + y * 18))
         }
 
