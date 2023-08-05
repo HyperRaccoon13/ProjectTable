@@ -3,7 +3,6 @@ package com.github.erdragh.projecttable.client.screen
 import com.github.erdragh.projecttable.ProjectTable
 import com.github.erdragh.projecttable.block.ModBlocks
 import com.github.erdragh.projecttable.utils.GenericTypeChecker
-import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket
 import net.minecraft.recipebook.ServerPlaceRecipe
 import net.minecraft.server.level.ServerPlayer
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.player.StackedContents
 import net.minecraft.world.inventory.*
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.CraftingRecipe
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.Level
@@ -113,14 +111,13 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
 
         initPlayerSlots(this::addSlot, inventory, 8, 133)
 
-        updateResultContainer(syncId, player.level, player, inputContainer, resultContainer, this);
+        updateResultContainer(syncId, player.level, player, inputContainer, resultContainer, this)
     }
 
     companion object {
-        private val resultSlot = 0
-        private val gridEnd = 3 * 3 + 1
-        private val inventoryEnd = gridEnd + 9 * 2
-        private val playerInventoryEnd = inventoryEnd + (9 * 4)
+        private const val GRID_END = 3 * 3 + 1
+        private const val INVENTORY_END = GRID_END + 9 * 2
+        private const val PLAYER_INVENTORY_END = INVENTORY_END + (9 * 4)
 
         fun updateResultContainer(
             syncId: Int,
@@ -159,7 +156,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
 
     override fun slotsChanged(container: Container) {
         access.evaluate { level, _ ->
-            updateResultContainer(stateId, level, player, inputContainer, resultContainer, this);
+            updateResultContainer(stateId, level, player, inputContainer, resultContainer, this)
         }
     }
 
@@ -187,7 +184,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
                     if (notEmpty && stackMatches && notDamaged && notEnchanted && noCustomName) {
                         stackThatMayFit = stackThatMayFit.copy()
                         if (stackThatMayFit.count > 1) {
-                            container.removeItem(i, 1);
+                            container.removeItem(i, 1)
                         } else {
                             container.removeItemNoUpdate(i)
                         }
@@ -271,8 +268,8 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
                 // try and quick transfer the item into the player inventory
                 if (!this.moveItemStackTo(
                         stackInClickedSlot,
-                        inventoryEnd,
-                        playerInventoryEnd,
+                        INVENTORY_END,
+                        PLAYER_INVENTORY_END,
                         false
                     )
                 ) {
@@ -281,11 +278,11 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
 
                 clickedSlot.onQuickCraft(stackInClickedSlot, newStackAtIndex)
                 // quick-transferring from the players inventory (to the extra table storage)
-            } else if (index in inventoryEnd..<playerInventoryEnd) {
-                if (!this.moveItemStackTo(stackInClickedSlot, gridEnd, inventoryEnd, false)) {
+            } else if (index in INVENTORY_END..<PLAYER_INVENTORY_END) {
+                if (!this.moveItemStackTo(stackInClickedSlot, GRID_END, INVENTORY_END, false)) {
                     return ItemStack.EMPTY
                 }
-            } else if (!this.moveItemStackTo(stackInClickedSlot, inventoryEnd, playerInventoryEnd, false)) {
+            } else if (!this.moveItemStackTo(stackInClickedSlot, INVENTORY_END, PLAYER_INVENTORY_END, false)) {
                 return ItemStack.EMPTY
             }
 

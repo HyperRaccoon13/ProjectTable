@@ -8,20 +8,20 @@ import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener
-import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.inventory.Slot
-import org.spongepowered.asm.mixin.Mixin
 
-class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventory, title: Component) : RecipeUpdateListener,
+class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventory, title: Component) :
+    RecipeUpdateListener,
     AbstractContainerScreen<ProjectTableScreenHandler>(handler, inventory, title) {
     companion object {
         private val texture: ResourceLocation = ProjectTable.id("textures/gui/projecttable.png")
         private val recipeButtonTexture = ResourceLocation("textures/gui/recipe_button.png")
     }
+
     private val recipeBook: RecipeBookComponent = RecipeBookComponent()
     private var narrow: Boolean = false
 
@@ -37,19 +37,21 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
         super.init()
         this.narrow = width < 379
 
-        this.recipeBook.init(width, height, minecraft, narrow, menu)
-        this.leftPos = recipeBook.updateScreenPosition(width, imageWidth)
-        addRenderableOnly(recipeBook)
-
-        setInitialFocus(recipeBook)
-
-        addRenderableWidget(ImageButton(leftPos + 5, topPos + 34, 20, 18, 0, 0, 19, recipeButtonTexture) { widget ->
-            recipeBook.initVisuals()
-            recipeBook.toggleVisibility()
+        minecraft?.let {
+            this.recipeBook.init(width, height, it, narrow, menu)
             this.leftPos = recipeBook.updateScreenPosition(width, imageWidth)
-            widget.x = this.leftPos + 5
-            widget.y = this.topPos + 34
-        })
+            addRenderableOnly(recipeBook)
+
+            setInitialFocus(recipeBook)
+
+            addRenderableWidget(ImageButton(leftPos + 5, topPos + 34, 20, 18, 0, 0, 19, recipeButtonTexture) { widget ->
+                recipeBook.initVisuals()
+                recipeBook.toggleVisibility()
+                this.leftPos = recipeBook.updateScreenPosition(width, imageWidth)
+                widget.x = this.leftPos + 5
+                widget.y = this.topPos + 34
+            })
+        }
     }
 
     override fun containerTick() {
