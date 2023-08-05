@@ -2,6 +2,7 @@ package com.github.erdragh.projecttable.client.screen
 
 import com.github.erdragh.projecttable.ProjectTable
 import com.github.erdragh.projecttable.block.ModBlocks
+import com.github.erdragh.projecttable.config.ProjectTableConfig
 import com.github.erdragh.projecttable.utils.GenericTypeChecker
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket
 import net.minecraft.recipebook.ServerPlaceRecipe
@@ -30,7 +31,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
         inventory,
         SimpleContainer(
             9 + //crafting grid
-                    2 * 9 // extra storage
+                    ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 9 // extra storage
         ),
         ContainerLevelAccess.NULL
     )
@@ -105,19 +106,19 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
         }
 
         // extra project table storage
-        for (y in 0..1) for (x in 0..8) {
+        for (y in 0..<ProjectTableConfig.EXTRA_STORAGE_ROWS.get()) for (x in 0..8) {
             addSlot(Slot(container, x + y * 9 + 9, 8 + x * 18, 84 + y * 18))
         }
 
-        initPlayerSlots(this::addSlot, inventory, 8, 133)
+        initPlayerSlots(this::addSlot, inventory, 8, 97 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18)
 
         updateResultContainer(syncId, player.level, player, inputContainer, resultContainer, this)
     }
 
     companion object {
         private const val GRID_END = 3 * 3 + 1
-        private const val INVENTORY_END = GRID_END + 9 * 2
-        private const val PLAYER_INVENTORY_END = INVENTORY_END + (9 * 4)
+        private val inventoryEnd = { GRID_END + 9 * ProjectTableConfig.EXTRA_STORAGE_ROWS.get() }
+        private val playerInventoryEnd = { inventoryEnd() + (9 * 4) }
 
         fun updateResultContainer(
             syncId: Int,
@@ -268,8 +269,8 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
                 // try and quick transfer the item into the player inventory
                 if (!this.moveItemStackTo(
                         stackInClickedSlot,
-                        INVENTORY_END,
-                        PLAYER_INVENTORY_END,
+                        inventoryEnd(),
+                        playerInventoryEnd(),
                         false
                     )
                 ) {
@@ -277,12 +278,20 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
                 }
 
                 clickedSlot.onQuickCraft(stackInClickedSlot, newStackAtIndex)
-                // quick-transferring from the players inventory (to the extra table storage)
-            } else if (index in INVENTORY_END..<PLAYER_INVENTORY_END) {
-                if (!this.moveItemStackTo(stackInClickedSlot, GRID_END, INVENTORY_END, false)) {
+                // quick-transferring from the players inventory
+            } else if (index in inventoryEnd()..<playerInventoryEnd()) {
+                // first tries to transfer the stack to the extra storage, if it can't do that it will try to move it to the crafting grid
+                if (!this.moveItemStackTo(stackInClickedSlot, GRID_END, inventoryEnd(), false) && !this.moveItemStackTo(
+                        stackInClickedSlot,
+                        1,
+                        GRID_END,
+                        false
+                    )
+                ) {
                     return ItemStack.EMPTY
                 }
-            } else if (!this.moveItemStackTo(stackInClickedSlot, INVENTORY_END, PLAYER_INVENTORY_END, false)) {
+                // transferring from extra inventory to player
+            } else if (!this.moveItemStackTo(stackInClickedSlot, inventoryEnd(), playerInventoryEnd(), false)) {
                 return ItemStack.EMPTY
             }
 
