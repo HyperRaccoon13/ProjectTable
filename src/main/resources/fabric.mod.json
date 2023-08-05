@@ -28,13 +28,13 @@
     ],
     "rei_common": [
       {
-        "value": "com.github.erdragh.projecttable.compat.ProjectTableREIPluginServer",
+        "value": "com.github.erdragh.projecttable.compat.rei.ProjectTableREIPluginServer",
         "adapter": "kotlin"
       }
     ],
     "rei_client": [
       {
-        "value": "com.github.erdragh.projecttable.compat.ProjectTableREIPlugin",
+        "value": "com.github.erdragh.projecttable.compat.rei.ProjectTableREIPlugin",
         "adapter": "kotlin"
       }
     ]

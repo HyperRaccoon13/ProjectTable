@@ -1,4 +1,4 @@
-package com.github.erdragh.projecttable.compat
+package com.github.erdragh.projecttable.compat.rei
 
 import com.github.erdragh.projecttable.block.ModBlocks
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin

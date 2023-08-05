@@ -1,4 +1,4 @@
-package com.github.erdragh.projecttable.compat
+package com.github.erdragh.projecttable.compat.rei
 
 import com.github.erdragh.projecttable.ProjectTable
 import com.github.erdragh.projecttable.client.screen.ProjectTableScreenHandler
