@@ -116,6 +116,9 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
         return super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton) && bl
     }
 
+    // I need to specify the maybe null here, because the method signature
+    // is ill-defined in the mappings it seems. Sometimes the slot can be null,
+    // which kotlin would detect and throw a NullPointerException
     override fun slotClicked(slot: Slot?, slotId: Int, mouseButton: Int, type: ClickType) {
         super.slotClicked(slot, slotId, mouseButton, type)
         recipeBook.slotClicked(slot)

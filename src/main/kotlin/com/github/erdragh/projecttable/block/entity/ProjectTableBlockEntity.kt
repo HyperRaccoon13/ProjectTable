@@ -25,6 +25,10 @@ class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) :
     BaseContainerBlockEntity(ModBlocks.PROJECT_TABLE_ENTITY_TYPE, pos, state), DelegatedContainer {
     private val container: SimpleContainer = SimpleContainer(27)
 
+    init {
+        container.addListener { setChanged() }
+    }
+
     override fun saveAdditional(tag: CompoundTag) {
         super.saveAdditional(tag)
         ContainerHelper.saveAllItems(tag, containerToNonNullList(container))

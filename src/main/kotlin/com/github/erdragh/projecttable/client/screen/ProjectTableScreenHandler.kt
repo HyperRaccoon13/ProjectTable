@@ -3,7 +3,7 @@ package com.github.erdragh.projecttable.client.screen
 import com.github.erdragh.projecttable.ProjectTable
 import com.github.erdragh.projecttable.block.ModBlocks
 import com.github.erdragh.projecttable.utils.GenericTypeChecker
-import net.minecraft.network.FriendlyByteBuf
+import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket
 import net.minecraft.recipebook.ServerPlaceRecipe
 import net.minecraft.server.level.ServerPlayer
@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.player.StackedContents
 import net.minecraft.world.inventory.*
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.CraftingRecipe
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.Level
@@ -25,12 +26,14 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
     private val resultContainer: ResultContainer
     private val access: ContainerLevelAccess
     private val player: Player
-    private val syncId: Int
 
     constructor(syncId: Int, inventory: Inventory) : this(
         syncId,
         inventory,
-        SimpleContainer(27),
+        SimpleContainer(
+            9 + //crafting grid
+                    2 * 9 // extra storage
+        ),
         ContainerLevelAccess.NULL
     )
 
@@ -40,11 +43,9 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
         container: Container,
         access: ContainerLevelAccess
     ) : super(ProjectTable.PROJECT_TABLE_SCREEN_HANDLER_TYPE, syncId) {
-        checkContainerSize(container, 9)
         this.access = access
         this.player = inventory.player
         this.container = container
-        this.syncId = syncId
         this.inputContainer = object : CraftingContainer(this, 3, 3) {
             override fun getContainerSize(): Int {
                 return 9
@@ -116,6 +117,11 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
     }
 
     companion object {
+        private val resultSlot = 0
+        private val gridEnd = 3 * 3 + 1
+        private val inventoryEnd = gridEnd + 9 * 2
+        private val playerInventoryEnd = inventoryEnd + (9 * 4)
+
         fun updateResultContainer(
             syncId: Int,
             level: Level,
@@ -153,14 +159,12 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
 
     override fun slotsChanged(container: Container) {
         access.evaluate { level, _ ->
-            updateResultContainer(syncId, level, player, inputContainer, resultContainer, this);
+            updateResultContainer(stateId, level, player, inputContainer, resultContainer, this);
         }
     }
 
     override fun fillCraftSlotsStackedContents(itemHelper: StackedContents) {
-        for (i in 0..<container.containerSize) {
-            itemHelper.accountSimpleStack(container.getItem(i))
-        }
+        for (i in 0..<container.containerSize) itemHelper.accountSimpleStack(container.getItem(i))
     }
 
     override fun handlePlacement(placeAll: Boolean, recipe: Recipe<*>, player: ServerPlayer) {
@@ -171,22 +175,26 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
             override fun moveItemToGrid(slotToFill: Slot, ingredient: ItemStack) {
                 // scan storage, but not grid
                 for (i in 9..<container.containerSize) {
-                    var stack = container.getItem(i)
-                    if (!stack.isEmpty && ItemStack.matches(
-                            ingredient,
-                            stack
-                        ) && !stack.isDamaged && !stack.isEnchanted && !stack.hasCustomHoverName()
-                    ) {
-                        stack = stack.copy()
-                        if (stack.count > 1) {
+                    var stackThatMayFit = container.getItem(i)
+                    val notEmpty = !stackThatMayFit.isEmpty
+                    val stackMatches = ItemStack.isSameItemSameTags(
+                        ingredient,
+                        stackThatMayFit
+                    )
+                    val notDamaged = !stackThatMayFit.isDamaged
+                    val notEnchanted = !stackThatMayFit.isEnchanted
+                    val noCustomName = !stackThatMayFit.hasCustomHoverName()
+                    if (notEmpty && stackMatches && notDamaged && notEnchanted && noCustomName) {
+                        stackThatMayFit = stackThatMayFit.copy()
+                        if (stackThatMayFit.count > 1) {
                             container.removeItem(i, 1);
                         } else {
                             container.removeItemNoUpdate(i)
                         }
 
-                        stack.count = 1
+                        stackThatMayFit.count = 1
                         if (slotToFill.item.isEmpty) {
-                            slotToFill.set(stack)
+                            slotToFill.set(stackThatMayFit)
                         } else {
                             slotToFill.item.grow(1)
                         }
@@ -247,43 +255,54 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
     }
 
     override fun quickMoveStack(player: Player, index: Int): ItemStack {
-        var stack = ItemStack.EMPTY
-        val slot = if (index >= slots.size) null else slots[index]
-        if (slot != null && slot.hasItem()) {
-            val stack2 = slot.item
-            stack = stack2.copy()
+        var newStackAtIndex = ItemStack.EMPTY
+        val clickedSlot = if (index >= slots.size) null else slots[index]
+        if (clickedSlot != null && clickedSlot.hasItem()) {
+            val stackInClickedSlot = clickedSlot.item
+            newStackAtIndex = stackInClickedSlot.copy()
 
+            // quick-transferring the result
             if (index == 0) {
+                // if we quick-transfer slot 0, it's the result, so we need
+                // to notify stuff that something was crafted
                 access.evaluate { level, _ ->
-                    stack2.item.onCraftedBy(stack2, level, player)
+                    stackInClickedSlot.item.onCraftedBy(stackInClickedSlot, level, player)
                 }
-                if (!this.moveItemStackTo(stack2, 28, 63, false)) {
+                // try and quick transfer the item into the player inventory
+                if (!this.moveItemStackTo(
+                        stackInClickedSlot,
+                        inventoryEnd,
+                        playerInventoryEnd,
+                        false
+                    )
+                ) {
                     return ItemStack.EMPTY
                 }
 
-                slot.onQuickCraft(stack2, stack)
-            } else if (index in 28..63) {
-                if (!this.moveItemStackTo(stack2, 10, 27, false)) {
+                clickedSlot.onQuickCraft(stackInClickedSlot, newStackAtIndex)
+                // quick-transferring from the players inventory (to the extra table storage)
+            } else if (index in inventoryEnd..<playerInventoryEnd) {
+                if (!this.moveItemStackTo(stackInClickedSlot, gridEnd, inventoryEnd, false)) {
                     return ItemStack.EMPTY
                 }
-            } else if (this.moveItemStackTo(stack2, 28, 63, false)) {
+            } else if (!this.moveItemStackTo(stackInClickedSlot, inventoryEnd, playerInventoryEnd, false)) {
                 return ItemStack.EMPTY
             }
 
-            if (stack2.isEmpty) {
-                slot.set(ItemStack.EMPTY)
+            if (stackInClickedSlot.isEmpty) {
+                clickedSlot.set(ItemStack.EMPTY)
             } else {
-                slot.setChanged()
+                clickedSlot.setChanged()
             }
 
-            if (stack2.count == stack.count) {
+            if (stackInClickedSlot.count == newStackAtIndex.count) {
                 return ItemStack.EMPTY
             }
 
-            slot.onTake(player, stack2)
+            clickedSlot.onTake(player, stackInClickedSlot)
         }
 
-        return stack
+        return newStackAtIndex
     }
 
     override fun canTakeItemForPickAll(stack: ItemStack, slot: Slot): Boolean {
@@ -303,7 +322,7 @@ class ProjectTableScreenHandler : RecipeBookMenu<CraftingContainer> {
     }
 
     override fun getSize(): Int {
-        return 10
+        return 1 + 9
     }
 
     override fun getRecipeBookType(): RecipeBookType {
