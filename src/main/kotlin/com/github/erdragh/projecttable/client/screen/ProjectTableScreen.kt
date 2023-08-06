@@ -1,6 +1,7 @@
 package com.github.erdragh.projecttable.client.screen
 
 import com.github.erdragh.projecttable.ProjectTable
+import com.github.erdragh.projecttable.config.ProjectTableConfig
 import com.github.erdragh.projecttable.mixin.RecipeBookComponentAccessor
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
@@ -18,24 +19,27 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
     RecipeUpdateListener,
     AbstractContainerScreen<ProjectTableScreenHandler>(handler, inventory, title) {
     companion object {
-        private val texture: ResourceLocation = ProjectTable.id("textures/gui/projecttable.png")
+        private val texture = ProjectTable.id("textures/gui/projecttable.png")
         private val recipeButtonTexture = ResourceLocation("textures/gui/recipe_button.png")
     }
 
-    private val recipeBook: RecipeBookComponent = RecipeBookComponent()
-    private var narrow: Boolean = false
+    private val recipeBook = RecipeBookComponent()
+    private var narrow = false
 
-    private var lastRevision: Int = -1
+    private var lastRevision = -1
 
     init {
         this.imageWidth = 176
-        this.imageHeight = 215
+        this.imageHeight = 179 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18
         this.inventoryLabelY = imageHeight - 93
     }
 
     override fun init() {
         super.init()
         this.narrow = width < 379
+
+        this.imageHeight = 179 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18
+        this.inventoryLabelY = imageHeight - 93
 
         minecraft?.let {
             this.recipeBook.init(width, height, it, narrow, menu)
@@ -86,7 +90,13 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
         val x = leftPos
         val y = (height - imageHeight) / 2
 
-        blit(poseStack, x, y, 0, 0, imageWidth, imageHeight)
+        blit(poseStack, x, y, 0, 0, imageWidth, 83)
+
+        for (i in 0..<ProjectTableConfig.EXTRA_STORAGE_ROWS.get()) {
+            blit(poseStack, x, y + 83 + i * 18, 0, 83, imageWidth, 18)
+        }
+
+        blit(poseStack, x, y + 83 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18, 0, 83 + 18, imageWidth, 96)
     }
 
     override fun renderLabels(poseStack: PoseStack, mouseX: Int, mouseY: Int) {
