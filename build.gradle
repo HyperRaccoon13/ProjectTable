@@ -20,6 +20,12 @@ version = "${mod_version}+${minecraft_version}" + (buildNumber != null ? "-${bui
 
 repositories {
     mavenCentral()
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
     maven { url = "https://maven.shedaniel.me/" } // REI
     maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
     maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
@@ -28,6 +34,10 @@ repositories {
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
     maven { url = "https://mvn.devos.one/snapshots/" }
     maven { url = "https://jitpack.io/" } // for Porting Lib: Mixin Extras, Fabric ASM
+	maven { // for forge config api port
+		name = "Fuzs Mod Resources"
+		url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+	}
 }
 
 dependencies {
@@ -43,10 +53,15 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-    // Uncomment the following line to enable the deprecated Fabric API modules.
-    // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
-    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+	// Dependencies
+	implementation 'com.electronwill.night-config:core:3.6.5'
+	implementation 'com.electronwill.night-config:toml:3.6.5'
+	modImplementation "curse.maven:forge_config_api-547434:$forge_config_api_cf_file"
+
+	// used to prevent forge config api port from complaining
+	modImplementation("com.github.AlphaMode:fakeconfig:master-SNAPSHOT") { exclude(group: "net.fabricmc.fabric-api") }
+	modImplementation("com.github.AlphaMode:fakeconfigtoml:master-SNAPSHOT") { exclude(group: "net.fabricmc.fabric-api") }
 
     // Development QOL
 	modImplementation("maven.modrinth:lazydfu:${lazydfu_version}")

@@ -2,6 +2,7 @@ package com.github.erdragh.projecttable.block.entity
 
 import com.github.erdragh.projecttable.block.ModBlocks
 import com.github.erdragh.projecttable.client.screen.ProjectTableScreenHandler
+import com.github.erdragh.projecttable.config.ProjectTableConfig
 import com.github.erdragh.projecttable.utils.DelegatedContainer
 import com.github.erdragh.projecttable.utils.containerToNonNullList
 import com.github.erdragh.projecttable.utils.nonNullListIntoContainer
@@ -23,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState
 
 class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) :
     BaseContainerBlockEntity(ModBlocks.PROJECT_TABLE_ENTITY_TYPE, pos, state), DelegatedContainer {
-    private val container: SimpleContainer = SimpleContainer(27)
+    private val container: SimpleContainer = SimpleContainer((1 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get()) * 9)
 
     init {
         container.addListener { setChanged() }

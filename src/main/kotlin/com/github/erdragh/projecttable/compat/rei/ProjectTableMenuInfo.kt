@@ -1,6 +1,7 @@
 package com.github.erdragh.projecttable.compat.rei
 
 import com.github.erdragh.projecttable.client.screen.ProjectTableScreenHandler
+import com.github.erdragh.projecttable.config.ProjectTableConfig
 import me.shedaniel.rei.api.common.transfer.RecipeFinder
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo
@@ -15,8 +16,8 @@ class ProjectTableMenuInfo(display: DefaultCraftingDisplay<*>) :
     companion object {
         private const val RESULT_SLOT = 0
         private const val GRID_END = 3 * 3 + 1
-        private const val INVENTORY_END = GRID_END + 9 * 2
-        private const val PLAYER_INVENTORY_END = INVENTORY_END + (9 * 4)
+        private val inventoryEnd = { GRID_END + 9 * ProjectTableConfig.EXTRA_STORAGE_ROWS.get() }
+        private val playerInventoryEnd = { inventoryEnd() + (9 * 4) }
     }
 
     private val displayValue: DefaultCraftingDisplay<*> = display
@@ -43,7 +44,7 @@ class ProjectTableMenuInfo(display: DefaultCraftingDisplay<*>) :
     }
 
     override fun getInventorySlots(context: MenuInfoContext<ProjectTableScreenHandler, *, DefaultCraftingDisplay<*>>?): MutableIterable<SlotAccessor> {
-        return context?.menu?.slots?.subList(GRID_END, PLAYER_INVENTORY_END)?.map { SlotAccessor.fromSlot(it) }?.toMutableList()
+        return context?.menu?.slots?.subList(GRID_END, playerInventoryEnd())?.map { SlotAccessor.fromSlot(it) }?.toMutableList()
             ?: ArrayList()
     }
 

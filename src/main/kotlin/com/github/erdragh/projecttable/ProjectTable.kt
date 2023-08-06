@@ -2,12 +2,15 @@ package com.github.erdragh.projecttable
 
 import com.github.erdragh.projecttable.block.ModBlocks
 import com.github.erdragh.projecttable.client.screen.ProjectTableScreenHandler
+import com.github.erdragh.projecttable.config.ProjectTableConfig
 import com.github.erdragh.projecttable.item.ModItems
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.inventory.MenuType
+import net.minecraftforge.api.ModLoadingContext
+import net.minecraftforge.fml.config.ModConfig
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,9 +26,7 @@ object ProjectTable : ModInitializer {
     }
 
     override fun onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+        ModLoadingContext.registerConfig(MOD_ID, ModConfig.Type.COMMON, ProjectTableConfig.SPEC)
         ModItems.initialize()
         ModBlocks.initialize()
         logger.info("Project Table initialized")
