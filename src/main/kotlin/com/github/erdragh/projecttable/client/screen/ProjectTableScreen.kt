@@ -28,9 +28,10 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
     private var lastRevision = -1
 
     init {
-        this.imageWidth = 176
-        this.imageHeight = 179 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18
-        this.inventoryLabelY = imageHeight - 93
+        imageWidth = 176
+        imageHeight = 179 + ProjectTableConfig.EXTRA_STORAGE_ROWS.get() * 18
+        inventoryLabelY = imageHeight - 93
+        titleLabelX = 29
     }
 
     override fun init() {
@@ -99,7 +100,7 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
     }
 
     override fun renderLabels(poseStack: PoseStack, mouseX: Int, mouseY: Int) {
-        font.draw(poseStack, title, ((imageWidth - font.width(title)) / 2).toFloat(), titleLabelY.toFloat(), 4210752)
+        font.draw(poseStack, title, titleLabelX.toFloat(), titleLabelY.toFloat(), 4210752)
         font.draw(poseStack, playerInventoryTitle, inventoryLabelX.toFloat(), inventoryLabelY.toFloat(), 4210752)
     }
 
