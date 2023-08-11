@@ -2,7 +2,6 @@ package com.github.erdragh.projecttable.client.screen
 
 import com.github.erdragh.projecttable.ProjectTable
 import com.github.erdragh.projecttable.config.ProjectTableConfig
-import com.github.erdragh.projecttable.mixin.RecipeBookComponentAccessor
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.components.ImageButton
@@ -62,7 +61,7 @@ class ProjectTableScreen(handler: ProjectTableScreenHandler, inventory: Inventor
         if (lastRevision != menu.stateId) {
             lastRevision = menu.stateId
             if (recipeBook.isVisible) {
-                (recipeBook as RecipeBookComponentAccessor).projecttable_updateStackedContents()
+                recipeBook.updateStackedContents()
             }
         }
         recipeBook.tick()
