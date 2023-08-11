@@ -1,7 +1,12 @@
 {
-  "parent": "block/cube_all",
-  "render_type": "minecraft:solid",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "projecttable:block/projecttable"
+    "particle": "projecttable:block/projecttable_side",
+    "north": "projecttable:block/projecttable_side_extra",
+    "south": "projecttable:block/projecttable_side_extra",
+    "east": "projecttable:block/projecttable_side",
+    "west": "projecttable:block/projecttable_side",
+    "up": "projecttable:block/projecttable_top",
+    "down": "projecttable:block/projecttable_bottom"
   }
 }
