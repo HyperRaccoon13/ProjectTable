@@ -5,10 +5,16 @@
   "name": "ProjectTable",
   "description": "Adds the project table you've been so nostalgic about.",
   "authors": [
-    "Erdragh"
+    {
+      "contact": {
+        "email": "enderjanyt@gmail.com"
+      },
+      "name": "Erdragh"
+    }
   ],
   "contact": {
-    "sources": "https://github.com/Erdragh/ProjectTable"
+    "sources": "https://github.com/Erdragh/ProjectTable",
+    "issues": "https.//github.com/Erdragh/ProjectTable/issues"
   },
   "license": "MIT",
   "icon": "assets/projecttable/icon.png",
