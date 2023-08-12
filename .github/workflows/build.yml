@@ -63,6 +63,16 @@ jobs:
           name: Artifacts
           path: build/libs/
 
-      - name: publish to Modrinth, CurseForge and GitHub
+      - name: publish to Modrinth and CurseForge
         if: ${{ runner.os == 'Linux' && matrix.java == '17' && github.event.inputs.publish }} # only publish from one OS with latest Java
         run: ./gradlew publishMod
+
+      - name: Create GitHub Release
+        if: ${{ runner.os == 'Linux' && matrix.java == '17' && github.event.inputs.publish }} # only publish from one OS with latest Java
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.PUBLISH_GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            LICENSE
+            build/libs/*.jar
