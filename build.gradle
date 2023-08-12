@@ -7,6 +7,7 @@ plugins {
     id "io.github.juuxel.loom-vineflower" version "1.+" // Vineflower, a better decompiler
     id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
 	id "com.modrinth.minotaur" version "2.+" // modrinth plugin
+	id "com.matthewprenger.cursegradle" version "1.+" // curseforge publishing
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -97,6 +98,7 @@ processResources {
     properties.put("fabric_loader_version", loader_version)
     properties.put("fabric_api_version", fabric_version)
     properties.put("minecraft_version", minecraft_version)
+	properties.put("display_name", display_name)
 
     properties.forEach((k, v) -> inputs.property(k, v))
 
