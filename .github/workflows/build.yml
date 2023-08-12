@@ -53,7 +53,13 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
 
+      - name: extract version
+        id: getversion
+        run: echo "{version}={$(.github/scripts/extract_version.sh)}" >> $GITHUB_OUTPUT
+
       - name: build
+        env:
+          VERSION_NAME: ${{ steps.getversion.outputs.version }}
         run: ./gradlew clean build
 
       - name: capture build artifacts
@@ -64,6 +70,8 @@ jobs:
           path: build/libs/
 
       - name: publish to Modrinth and CurseForge
+        env:
+          VERSION_NAME: ${{ steps.getversion.outputs.version }}
         if: ${{ runner.os == 'Linux' && matrix.java == '17' && github.event.inputs.publish }} # only publish from one OS with latest Java
         run: ./gradlew publishMod
 
@@ -72,6 +80,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.PUBLISH_GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ steps.getversion.outputs.version }}
           prerelease: false
           files: |
             LICENSE
