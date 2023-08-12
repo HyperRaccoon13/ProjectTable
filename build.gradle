@@ -6,6 +6,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.9.0"
     id "io.github.juuxel.loom-vineflower" version "1.+" // Vineflower, a better decompiler
     id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
+	id "com.modrinth.minotaur" version "2.+" // modrinth plugin
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -15,8 +16,9 @@ group = project.maven_group
 
 // Formats the mod version to include the Minecraft version and build number (if present)
 // example: 1.0.0+1.18.2-100
-String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
-version = "${mod_version}+${minecraft_version}" + (buildNumber != null ? "-${buildNumber}" : "")
+String runNumber = System.getenv("GITHUB_RUN_NUMBER")
+String build = runNumber != null ? "build.$runNumber" : "local"
+version = "$mod_version-$build+mc$minecraft_version"
 
 loom {
 	accessWidenerPath = file("src/main/resources/${archives_base_name}.accesswidener")
@@ -104,8 +106,8 @@ processResources {
 }
 
 machete {
-    // disable machete locally for faster builds
-    enabled = buildNumber != null
+    // Only optimize published releases
+    enabled = Boolean.getBoolean("PUBLISHING")
 }
 
 tasks.withType(KotlinCompile).all {
@@ -115,7 +117,7 @@ tasks.withType(KotlinCompile).all {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = Integer.parseInt(sourceCompatibility)
+    it.options.release.set(Integer.parseInt(sourceCompatibility))
 }
 
 java {
@@ -124,7 +126,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${archives_base_name}" }
     }
 }
 
@@ -143,3 +145,5 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+apply from: "gradle/publishing/publishing.gradle"
