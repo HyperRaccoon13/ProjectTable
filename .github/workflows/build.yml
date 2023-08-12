@@ -5,6 +5,15 @@
 
 name: build
 on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to Modrinth, CurseForge and GitHub
+        required: true
+        default: "false"
+      patch:
+        description: Patch number, 0 for first
+        required: true
   pull_request:
   push:
 
