@@ -2,10 +2,10 @@
 modrinth {
 	token = System.getenv("MODRINTH_TOKEN")
 	projectId = modrinth_id
-	versionNumber = mod_version
+	versionNumber = version
 	versionType = release_type
+	versionName = published_version_name
 	changelog = changelog_text
-	uploadFile = remapJar
 	uploadFile = file("build/libs/${remapJar.archiveBaseName.get()}-${version}.jar")
 	gameVersions = [ minecraft_version ]
 	loaders = ["fabric"]
