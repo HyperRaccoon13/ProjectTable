@@ -53,9 +53,22 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
 
+      # the extracted version is only really relevant for
+      # the artifact names and for publishing, as such, it
+      # should (and can, because it's a bash script) only
+      # run on Linux
       - name: extract version
+        if: ${{ runner.os != 'Windows' }}
         id: getversion
-        run: echo "{version}={$(.github/scripts/extract_version.sh)}" >> $GITHUB_OUTPUT
+        run: |
+          echo "version=$(.github/scripts/extract_version.sh)" >> "$GITHUB_OUTPUT"
+
+      # windows throws an error if the second parameter for
+      # echo is not set, which it will never be, because it's
+      # only set for Linux
+      - name: show extracted version
+        if: ${{ runner.os != 'Windows' }}
+        run: echo ${{ steps.getversion.outputs.version }}
 
       - name: build
         env:
