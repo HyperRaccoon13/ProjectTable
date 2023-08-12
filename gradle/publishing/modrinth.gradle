@@ -1,0 +1,18 @@
+// task that publishes to modrinth
+modrinth {
+	token = System.getenv("MODRINTH_TOKEN")
+	projectId = modrinth_id
+	versionNumber = mod_version
+	versionType = release_type
+	changelog = changelog_text
+	uploadFile = remapJar
+	uploadFile = file("build/libs/${remapJar.archiveBaseName.get()}-${version}.jar")
+	gameVersions = [ minecraft_version ]
+	loaders = ["fabric"]
+	dependencies {
+		required.project "fabric-api"
+		required.project "fabric-language-kotlin"
+		required.project "forge-config-api-port"
+		optional.project "rei"
+	}
+}
