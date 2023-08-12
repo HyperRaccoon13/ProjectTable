@@ -55,7 +55,7 @@ jobs:
 
       - name: extract version
         id: getversion
-        run: echo "::set-output name=version::$(.github/scripts/extract_version.sh)"
+        run: echo "{version}={$(.github/scripts/extract_version.sh)}" >> $GITHUB_OUTPUT
 
       - name: build
         env:
