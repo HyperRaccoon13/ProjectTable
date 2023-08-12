@@ -14,6 +14,7 @@ ext /*-ra properties*/ {
 tasks.register("publishMod") {
 	if (version_valid) {
 		dependsOn(tasks.named("modrinth"))
+		dependsOn(tasks.named("curseforge"))
 	}
 }
 
