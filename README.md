@@ -1,4 +1,4 @@
-# ProjectTable
+# Project Table Refabricated
 ![build workflow](https://img.shields.io/github/actions/workflow/status/Erdragh/ProjectTable/build.yml?style=for-the-badge)
 [![License](https://img.shields.io/github/license/Juuxel/Adorn.svg?style=for-the-badge)](LICENSE)
 [![Releases](https://img.shields.io/github/downloads/Erdragh/ProjectTable/total?style=for-the-badge

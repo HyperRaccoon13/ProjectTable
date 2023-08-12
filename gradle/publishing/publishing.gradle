@@ -7,7 +7,7 @@ ext /*-ra properties*/ {
 	properties.forEach ((k, v) -> set(k, v))
 
 	version_valid = versionValidForPublishing(version)
-	publishing_version_name = version_valid ? makeName(version) : "INVALID"
+	published_version_name = version_valid ? makeName(version, display_name) : "INVALID"
 	changelog_text = getChangelog(file(changelog_file))
 }
 
@@ -17,12 +17,12 @@ tasks.register("publishMod") {
 	}
 }
 
-static String makeName(String version) {
+static String makeName(String version, String displayName) {
 	String projectVersion = "v" + version.split("-build")[0].replace("-", ".")
 	String mcVersion = version.split("\\+mc")[1]
 	String rawPatch = System.getenv("PATCH_NUMBER")
 	String patch = rawPatch === null || rawPatch.isEmpty() || rawPatch == "0" ? "" : "Patch $rawPatch"
-	return "ProjectTable $mcVersion $projectVersion $patch".trim()
+	return "$displayName $mcVersion $projectVersion $patch".trim()
 }
 
 static boolean versionValidForPublishing(String version) {
@@ -38,3 +38,4 @@ static String getChangelog(File changelogFile) {
 }
 
 apply from: "gradle/publishing/modrinth.gradle"
+apply from: "gradle/publishing/curseforge.gradle"
