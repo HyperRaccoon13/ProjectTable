@@ -56,7 +56,7 @@ jobs:
       - name: extract version
         id: getversion
         run: |
-          echo "{version}={$(.github/scripts/extract_version.sh)}" >> "$GITHUB_OUTPUT"
+          echo "version=$(.github/scripts/extract_version.sh)" >> "$GITHUB_OUTPUT"
 
       - name: show extracted version
         run: echo ${{ steps.getversion.outputs.version }}
