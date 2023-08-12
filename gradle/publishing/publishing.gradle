@@ -6,6 +6,12 @@ ext /*-ra properties*/ {
 
 	properties.forEach ((k, v) -> set(k, v))
 
+	versionEnv = System.getenv("VERSION_NUMBER")
+
+	if (versionEnv != null) {
+		version = versionEnv
+	}
+
 	version_valid = versionValidForPublishing(version)
 	published_version_name = version_valid ? makeName(version, display_name) : "INVALID"
 	changelog_text = getChangelog(file(changelog_file))
