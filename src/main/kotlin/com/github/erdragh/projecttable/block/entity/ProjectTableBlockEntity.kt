@@ -57,7 +57,7 @@ class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     override fun canPlaceItemThroughFace(index: Int, itemStack: ItemStack, direction: Direction?): Boolean {
-        if (!ProjectTableConfig.STORAGE_INTERACTIONS.get()) return false;
+        if (!ProjectTableConfig.STORAGE_INTERACTIONS.get()) return false
         val isCraftingSlot = index < 9
         return if (isCraftingSlot) {
             // you can only place items into the crafting grid from above and if it's enabled in the config
@@ -69,7 +69,7 @@ class ProjectTableBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     override fun canTakeItemThroughFace(index: Int, stack: ItemStack, direction: Direction): Boolean {
-        if (!ProjectTableConfig.STORAGE_INTERACTIONS.get()) return false;
+        if (!ProjectTableConfig.STORAGE_INTERACTIONS.get()) return false
         // you can't take items out of the crafting slots ever, easily leads to dupes,
         // see Issue 16 (https://github.com/Erdragh/ProjectTableRefabricated/issues/16)
         return index >= 9
