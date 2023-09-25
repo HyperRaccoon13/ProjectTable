@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "PTP",
+    "PCP"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stone"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "T": {
+      "tag": "c:workbench"
+    },
+    "C": {
+      "tag": "c:chest"
+    }
+  },
+  "result": {
+    "item": "projecttable:projecttable",
+    "count": 1
+  }
+}

@@ -21,7 +21,7 @@ class ProjectTableBlock : BaseEntityBlock(
     Properties
         .of(Material.WOOD)
         .sound(SoundType.WOOD)
-        .strength(1f, 1f)
+        .strength(2.5F)
 ) {
 
     override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {

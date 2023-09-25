@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "projecttable",
   "version": "${version}",
-  "name": "ProjectTable",
+  "name": "${display_name}",
   "description": "Adds the project table you've been so nostalgic about.",
   "authors": [
     {
@@ -13,11 +13,11 @@
     }
   ],
   "contact": {
-    "sources": "https://github.com/Erdragh/ProjectTable",
-    "issues": "https.//github.com/Erdragh/ProjectTable/issues"
+    "sources": "https://github.com/Erdragh/ProjectTableRefabricated",
+    "issues": "https.//github.com/Erdragh/ProjectTableRefabricated/issues"
   },
   "license": "MIT",
-  "icon": "assets/projecttable/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
